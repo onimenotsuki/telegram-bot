@@ -2,19 +2,25 @@ const express = require('express');
 const app = express();
 const Telegraf = require('telegraf');
 const dotenv = require('dotenv');
+
+// Llamamos a la variables de entorno
 dotenv.config();
 
+// Inicialización de variables de entorno
 const token = process.env.TELEGRAM_TOKEN;
 const port = process.env.PORT || 8000;
+const webHookUrl = process.env.TELEGRAM_WEBHOOK_URL;
 
+// Iniciamos la instancia de Telegram
 const bot = new Telegraf(token);
 
+// Usamos el middleware para que se comunique con express
 app.use(bot.webhookCallback('/ruta-bot'));
 
-bot.telegram.setWebhook('https://85f0dad635a5.ngrok.io/ruta-bot');
-bot.command('/test', (ctx) => ctx.reply('Hola mundo, Bot'));
+bot.telegram.setWebhook(webHookUrl);
+bot.command('/hello', (ctx) => ctx.reply('Hola mundo, desde Bot'));
 
-app.post('/ruta-bot', (req, res) => {
+app.post('/bot', (_, res) => {
   res.send('Llamada a la ruta del bot');
 });
 
